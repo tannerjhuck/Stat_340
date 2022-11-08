@@ -1,0 +1,84 @@
+---
+title: "Homework 1"
+subtitle: "Autumn 2022"
+author: "Tanner Huck"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+* * * 
+
+### Instructions
+
+- This homework is due in Gradescope on Wednesday Oct 12 by midnight PST.
+
+- Please answer the following questions in the order in which they are posed. 
+
+- Don't forget to knit the document frequently to make sure there are no compilation errors. 
+
+- When you are done, download the PDF file as instructed in section and submit it in Gradescope. 
+
+* * *
+
+
+### Exercises 
+
+1. The	crew	of	Apollo	17	consisted	of	two	pilots	and	one	geologist.	Suppose	that	 NASA	had	actually	trained	three	pilots	and	two	geologists.	How	many	possible	Apollo 17 crews	could	have	been	formed
+
+Write the sample space in each case. You may denote the three pilots as $P_1, P_2, P_3$ and the two geologists as $G_1, G_2$. So $(P_1, P_2, G_1)$ represents the outcome that pilots 1 and 2 and geologist 1 were selected.
+
+    a. 	if	the	two	pilot	positions	have	identical	duties?	
+    
+    
+  Since the two piolet positions have identical duties, the order in choosing the piolets dose not matter and the order in choosing the geologist does not matter. 
+  Hence, there are 3 ways we can choose piolets $(3 * 2 * 1)/ 2$ and 2 ways we can choose geologists $(2 * 1) / 1$. This gives us a total of 6 different ways 
+  the crew can be formed $3*2$. The sample space is: 
+  $S=[(P_1, P_2, G_1), (P_1, P_2, G_2), (P_1, P_3, G_1), (P_1, P_3, G_2), (P_2 P_3, G_1), (P_2, P_3, G_2)]$
+    
+    
+    b. if	there	is	a	pilot	and	a	co-pilot?	
+    
+    
+  When there is a pilot and co-pilot then the order in which we choose the pilots matter and the chooses for the geologists stay the same. 
+  Hence, there are 6 ways we can choose pilots $(3 * 2 * 1)/ 1$ and still 2 ways to choose geologists. This gives us a total of 12 different ways 
+    the crew can be formed $6*2$. The sample space is: 
+  $S=[(P_1, P_2, G_1), (P_1, P_2, G_2), (P_1, P_3, G_1), (P_1, P_3, G_2), (P_2 P_3, G_1), (P_2, P_3, G_2),$
+  $(P_2, P_1, G_1), (P_2, P_1, G_2), (P_3, P_1, G_1), (P_3, P_1, G_2), (P_3, P_2, G_1), (P_3, P_2, G_2)]$
+  
+    
+2.  For two events $A$ and $B$ with $P(A)=0.5$ and $P(B)=0.8$, what are the largest and smallest possible values for $P(A \cap B)$? 
+
+    *Hint* you will need to use the Bonferroni inequality and also the subset inequality you learned in section.
+
+
+  Bonferroni inequality states that $P(A \cap B) \ge P(A) + P(B) - 1$ This means that the smallest possible value of $P(A \cap B) = P(A) + P(B) - 1 = 0.5 + 0.8 - 1 = 0.3$
+  
+  The subset inequality states that if $E \subset F$ than $P(E) \leq P(F)$. In our case, we want the maximum possible value of $P(A \cap B)$. Thus $P(A \cap B) \subset P(A)$ or $P(A \cap B) \subset P(B)$. Meaning that $P(A \cap B) \leq P(A)$ which is the same as $P(A \cap B) \le 0.8$ or $P(A \cap B) \leq P(B)$ which is the same as $P(A \cap B) \le 0.5$. We want the smaller value of the two because is dose not make sense if $P(A \cap B) > P(B)$, hence the maximum possible value of $P(A \cap B)$ is $.5$. Visualizing this, it is when $B$ is completely within $A$, meaning the greatest value of $P(A \cap B)$ is just equal to $B$.
+  
+
+3.  If $P(A) = \frac{1}{3}$ and $P(B^c)=\frac{1}{4}$, can $A$ and $B$ be disjoint? Support your answer.
+
+  No it is not possible for $A$ and $B$ to be disjoint. This is because $P(B) = 1 - P(B^c) = 1 - \frac{1}{4} = \frac{3}{4}$. We also know from Boole's inequality that $P(A \cup B) \le P(A) + P(B)$ and since $P(A) + P(B) = \frac{1}{3} + \frac{3}{4} = \frac{13}{12}$ than $P(A \cup B) \le \frac{13}{12}$. This means that when $A$ and $B$ are disjoint, $P(A \cup B) > 1$, a contradiction with axiom 2, $P(S) = 1$. Hence, $P(A \cup B)$ cannot be disjoint.
+
+4.  Three events $A$, $B$ and $C$ are defined in a sample space. Show that 
+$$P(A \cup B \cup C) \leq P(A) + P(B) + P(C).$$ 
+   
+    *Hint* Define $E = B \cup C$ and apply the union bound to $P(A \cup E)$ first. Then apply the union bound again to $P(E)$. 
+    
+  Assume that events $A$, $B$ and $C$ are defined in a sample space. Let the event $E$ be defined as $E = B \cup C$. We want to show that $P(A \cup B \cup C) \leq P(A) + P(B) + P(C)$. We can rewrite the left hand side as $P(A \cup E)$ then, using the union bound (Boole's inequality) once on $P(A \cup E)$ and again on $P(E)$ we get \dots
+\begin{align*}
+P(A \cup E) &\leq P(A) + P(E) \\
+&\leq P(A) + P(B) + P(C) 
+\end{align*}
+Hence proved that $P(A \cup B \cup C) \leq P(A) + P(B) + P(C)$.
+    
+    
+    
+    
+    
+    
+    
+ 
