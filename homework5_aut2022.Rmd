@@ -1,0 +1,208 @@
+---
+title: "Homework 5"
+subtitle: "Autumn 2022"
+author: "Tanner Huck"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(patchwork)
+```
+
+* * * 
+
+### Instructions
+
+- This homework is due in Gradescope on Wednesday Nov 9 by midnight PST.
+
+- Please answer the following questions in the order in which they are posed. 
+
+- Don't forget to knit the document frequently to make sure there are no compilation errors. 
+
+- When you are done, download the PDF file as instructed in section and submit it in Gradescope. 
+
+
+* * *
+
+1. (Linear transformations) Suppose that the PMF of $X$ is given by:
+   \begin{table}[h]
+   \centering
+   \begin{tabular}{ccc}
+   $x$ & a & b \\ \hline
+   $f(x)$ & $\pi$ & $(1-\pi)$ \\ \hline
+   \end{tabular}
+   \end{table}
+   
+   where $a$ and $b$ are some numbers. Answer the following. Be sure to support your answers.
+   
+a. Find $E \left[ X \right]$.
+
+$E[X] = a\pi + b(1-\pi)$
+   
+b. Find $Var \left[ X \right]$.
+\begin{align*}
+Var[X] &= E[X^2] - \mu^2 \\
+&= E[X^2] - E[X]^2 \\
+&= a^2\pi + b^2(1-\pi) - (a\pi + b(1-\pi))^2 \\
+&= a^2\pi + b^2(1-\pi) - (\pi(a-b)+b)^2 \\
+&= \pi(a^2-b^2)+b^2-\pi^2(a-b)^2-2\pi b(a-b)-b^2 
+\text{ , $b^2$ cancels and factor out $\pi(a-b)$}\\
+&= \pi(a-b)[(a+b)-\pi(a-b)-2b] \\
+&= \pi(a-b)[(a-b)-\pi(a-b)] \\
+&= \pi(a-b)^2(1-\pi) 
+\end{align*}
+
+c. Find $E\left[ \frac{X - b}{a - b} \right]$.
+
+\begin{align*}
+E[\frac{X-b}{a-b}] &= \sum_{x}^{}\frac{X-b}{a-b}f(x) \\
+&= \frac{a-b}{a-b}\pi + \frac{b-b}{a-b}(1-\pi) \\
+&= 1\pi + 0(1-\pi)\\
+&= \pi
+\end{align*}
+
+d. Find $Var \left[ \frac{X - b}{a - b} \right]$.
+   
+\begin{align*}
+Var[\frac{X-b}{a-b}] &= (\frac{1}{a-b})^2Var[x] \\
+&= (\frac{1}{a-b})^2 * \pi(a-b)^2(1-\pi) \\
+&= \pi(1-\pi)
+\end{align*}
+   
+
+2. (Rh negative) In the US population, 85% have an agglutinating factor in their blood classifying them as Rh positive, while 15% lack the factor and are Rh negative. A medical researcher wants to analyze blood from a newborn Rh negative infant, so he examines the blood types of successive newborn infants until he finds an Rh negative infant. 
+
+a. How many Rh positive infants should they expect to type before they find their first Rh negative? Be sure to set up the problem (random variable, distribution, assumptions you need to make) and clearly \textbf{state} any results you are using before just using them.
+
+$X$ is the number of positive Rh infants until the first negative Rh infant. Then $X \sim NBinom(1,0.15) = Geom(0.15)$. We are assuming that there is a fixed number of trials, 1. There are two outcomes, positive and negative. The probability of a negative is the same in each trial. Finally, that each trial is independent. 
+
+Now finding how many Rh positive infants should we expect to type before the first Rh negative.
+
+$E[X] = \frac{1-\pi}{\pi} = \frac{1-0.15}{0.15} = \frac{0.85}{0.15} \text{ or about } 5.667$
+
+b. Calculate the probability that they will type more Rh positive infants than expected. This probability can be calculated exactly as shown in class. Give the closed form expression for this probability and then calculate it in R. Be sure to echo your code chunk.  
+
+```{r prob_more_than_expected, echo = T}
+prob_more_pos = pnbinom((0.85/0.15),1,0.15,lower.tail=F)
+prob_more_pos
+```
+From our calculation, we can see that the probability that there will be more Rh positive infants than expected is `r prob_more_pos`.
+   
+3. (Memoryless) Let $X$ be a geometric random variable with probability $\pi$. That is,
+$$f(x) = \pi \cdot (1 - \pi)^{x}, \ \ x = 0, 1, 2 \dots$$ 
+
+a. Let $k$ be some non-negative integer. What is $P(X \geq k)$?  (\emph{Hint:} we did this in class, I want you to do it again.)
+
+We have $X \sim NBinom(1,\pi)$ and we want to find $P(X \geq k)$.
+\begin{align*}
+P(X \geq k) &= P(X = k) + P(X = k+1) + P(X + k+2) + \dots \\
+&= \pi(1-\pi)^k + \pi(1-\pi)^{k+1} + \pi(1-\pi)^{k+2} + \dots \\
+&= (1-\pi)^k * \sum_{x=k}^{\infty} \pi(1-\pi)^{x} \\
+&= (1-\pi)^k
+\end{align*}
+
+b. Show that for all non-negative integers  $x \geq k$
+$$P(X \geq x | X \geq k) = P(X \geq x -k).$$
+\begin{align*}
+P(X \geq x | X \geq k) &= \frac{P(X \geq x \cap X \geq k)}{P(X \geq k)} \\
+&= \frac{P((1-\pi)^x \cap (1-\pi)^k)}{P(1-\pi)^k} \text{ Since x $\geq$ k} \\
+&= \frac{P(1-\pi)^x}{P(1-\pi)^k} \\
+&= P(1-\pi)^{x-k} \\
+&= P(X \geq x - k)
+\end{align*}
+
+c. Because of this result, we say that the geometric distribution is \emph{memoryless}. Explain how this is an appropriate name for this property.
+
+The probability of a future term x-k in a geometric distribution, is the same probability as a geometric distribution with x-k trials. Thus, memoryless is an appropriate name because a future term does not depend on a past term.
+
+4. (Apple trees) From each of 6 trees in an apple orchard, 25 leaves are selected. On each of the leaves, the number of adult mites are counted. 
+
+\begin{table}[h]
+\centering
+\begin{tabular}{c|ccccccccc} \hline
+$x$ & 0 & 1 & 2 & 3 & 4 & 5 & 6 & 7 & 8+ \\
+count & 70 & 38 & 17 & 10 & 9 & 3 & 2 & 1 & 0 \\ \hline
+\end{tabular}
+\end{table}
+
+The dataset can be created in R as shown below. Type `?rep` for help. 
+
+```{r apple-data, echo = FALSE}
+apple_trees<-tibble(
+         mites=rep(0:7,
+                    times=c(70,38,17,10,9,3,2,1) ))
+
+```
+
+a. Print the number of observations (leaves) in the data set along with the mean $\bar{x}$ and standard deviation $s$ of the `mites` variable. Be sure to show your code. 
+
+```{r mean and sd}
+num_of_leaves = nrow(apple_trees)
+mean_of_mites = mean(apple_trees$mites)
+sd = sd(apple_trees$mites)
+```
+
+The number of observations (leaves) is `r num_of_leaves`, the mean is `r mean_of_mites`, and the standard deviation of the mites variable is `r sd`.
+
+Let $X$ denote the number of mites on a randomly selected leaf. In this question, you will consider two possible models for $X$:
+
+ - $X \sim Poisson(\lambda = \bar{x})$ 
+    
+ - $X \sim Geom( prob = \frac{1}{1 + \bar{x}} )$
+    
+  where $\bar{x}$ is the number you calculated from part a. for the mean. 
+  
+
+b. Make side-by-side plots showing how well each model fits. Each plot must have the histogram of the data with the probabilities according to the model overlaid on it. Which model appears to fit the data better? (Be sure to echo your code. Don't forget labels, titles etc. )
+
+   \emph{Hint: For help with the code for side-by-side plots, look at Section 8.1 on the negative binomial. For help on overlaying theoretical probabilities on a histogram, look at  section 8.2 on the Poisson distribution.}
+
+```{r poisson and geom histogram, echo = T}
+pois_data <- tibble(
+  mites = 0:7,
+  f_pois = dpois(mites,mean_of_mites)
+)
+
+pois_hist <- ggplot() +
+  geom_histogram(data = apple_trees,
+                  mapping = aes(x = mites, 
+                                y = ..density..),
+                  binwidth = 1) +
+  geom_segment(data = pois_data,
+               mapping = aes(x = mites,
+                             xend = mites,
+                             y = 0,
+                             yend = f_pois)) +
+  labs(x = "Number of Mites", 
+       y = "Density",
+       title = "Mites on leaf",
+       subtitle = "Poission probabilites overlaid")
+
+geom_data <- tibble(
+  mites = 0:7,
+  f_geom = dnbinom(mites,1,(1/(1+mean_of_mites)))
+)
+
+geom_hist <- ggplot() +
+  geom_histogram(data = apple_trees,
+                  mapping = aes(x = mites, 
+                                y = ..density..),
+                  binwidth = 1) +
+  geom_segment(data = geom_data,
+               mapping = aes(x = mites,
+                             xend = mites,
+                             y = 0,
+                             yend = f_geom)) +
+  labs(x = "Number of Mites", 
+       y = "Density",
+       title = "Mites on leaf",
+       subtitle = "Geometric probabilites overlaid")
+
+pois_hist + geom_hist
+```
+
+Looking at these two histograms, it appears that the geometric distribution is a better fit for the data.
+
+

@@ -1,0 +1,186 @@
+---
+title: "Homework 3"
+subtitle: "Autumn 2022"
+author: "Tanner Huck"
+header-includes:
+    - \usepackage{setspace}\doublespacing
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+library(tidyverse)
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+* * * 
+### Instructions
+
+- This homework is due in Gradescope on Wednesday Oct 26 by midnight PST.
+
+- Please answer the following questions in the order in which they are posed. 
+
+- Don't forget to knit the document frequently to make sure there are no compilation errors. 
+
+- When you are done, download the PDF file as instructed in section and submit it in Gradescope. 
+
+
+* * *
+
+1. (Shelley) Below are the last five lines of Shelley's poem *Ozymandias* 
+
+   ```{verbatim}
+   "My name is Ozymandias, king of kings:
+    Look on my works, ye Mighty, and despair!"
+    Nothing beside remains. Round the decay
+    Of that colossal wreck, boundless and bare
+    The lone and level sands stretch far away 
+   ```
+
+   Let $X$ denote the length of a word which is randomly selected from those lines. 
+
+a. Write the P.M.F. of $X$ in tabular form. 
+
+\begin{tabular}{|c|c|c|c|c|c|c|c|c|c|} \hline
+$x$ & 2 & 3 & 4 & 5 & 6 & 7 & 8 & 9 & 10 \\ \hline
+$f(x)$ & 7/36 & 6/36 & 7/36 & 7/36 & 2/36 & 4/36 & 1/36 & 1/36 & 1/36\\ \hline
+\end{tabular}
+    
+b. Make a probability histogram of the distribution in part a.
+
+```{r probability histogram of X}
+x = c(2, 3, 4, 5, 6, 7, 8, 9, 10)
+f_x = c(7, 6, 7, 7, 2, 4, 1, 1, 1)
+prob_x = f_x/36
+
+letters_x <- data.frame(
+  x = x,
+  probs = prob_x)
+
+ggplot(data=letters_x, mapping = aes(x=x,y=probs))+
+  geom_col(width=1) + 
+  labs(title = "Probability Histogram of X",
+       y = "Probability of X",
+       x = "Number of Letters in a Word") +
+  theme(plot.title=element_text(hjust=0.5)) + 
+  scale_x_continuous(breaks = c(2, 3, 4, 5, 6, 7, 8, 9, 10))
+```
+
+c. Write the C.D.F. of $X$.
+
+\begin{align*} 
+F(x) &= P(X\leq x) \\ 
+&= \left \{ 
+\begin{array}{cc}
+                0 &\text{ if }  x < 2 \\ \\
+      \frac{7}{36} &\text{ if } 2 \leq x < 3 \\ \\
+      \frac{13}{36} &\text{ if } 3 \leq x < 4 \\ \\
+      \frac{20}{36} &\text{ if } 4 \leq x < 5 \\ \\
+      \frac{27}{36} &\text{ if } 5 \leq x < 6 \\ \\
+      \frac{29}{36} &\text{ if } 6 \leq x < 7 \\ \\
+      \frac{33}{36} &\text{ if } 7 \leq x < 8 \\ \\
+      \frac{34}{36} &\text{ if } 8 \leq x < 9 \\ \\
+      \frac{35}{36} &\text{ if } 9 \leq x < 10 \\ \\
+                1 &\text{ if } x \geq 10
+\end{array} \right.
+\end{align*}
+
+\dotfill
+
+2. (Random walk) Suppose a particle moves 4 steps along the x-axis, starting at 0. At each step, it moves one unit to the right or to the left and is equally  likely to go to the right as it is to the left. 
+
+a. Each possible outcome of this experiment is a 4-tuple. For example, the outcome $(L, L, L, L)$ represents the case when the particle moves one unit to the left at each of the four steps to end up at $x=-4$. The outcome $(R, L, R, L)$ represents the case when the particle moves one unit to the right, then one unit back to the left and so on ending up at $x=0$. How many elements are in the sample space? Be sure to calculate the number and also justify your answer.
+
+For every step that the particle makes, it has the option of moving left or right. Because it makes 4 steps, each with 2 possible outcomes, the sample spaces is $S = 2 * 2 * 2 * 2 = 2^4 = 16$.
+
+b. Let $E$ denote the event that the particle ends up at $x = 0$. Write the outcomes in $E$ and calculate $P(E)$. Be sure to justify your answer.
+
+The event E is made up of all elements in the sample space with 2 steps left and two steps right. This means to find the number of element is E we can do 
+```{r elements in E}
+E = choose(4, 2) 
+E
+```
+This means that there are `r E` elements in event E. Assuming that every element in E is equally likely, then $P(E) = 6 / 16 = 3 / 8$.
+
+c. Let $X$ denote the position of the particle after 4 steps. Write its PMF in a tabular format. I have created a partial table for you to fill in. Each row should contain a possible value $x$, the outcomes that give the possible value and the probability. (*Hint: in part b you calculated $P(X = 0)$.*)
+
+\begin{table}[h]
+\centering
+\begin{tabular}{|c|p{4in}|r|} \hline
+$x$ &  outcomes from $S$ & $f(x)$ \\ \hline 
+-4 & 1: (L,L,L,L) & 1/16 \\ \hline
+-2 & 4: (L,L,L,R), (L,L,R,L), (L,R,L,L), (R,L,L,L) & 4/16 \\ \hline
+0 & 6: (L,L,R,R), (L,R,R,L), (L,R,L,R), (R,R,L,L), (R,L,R,L), (R,L,L,R) & 6/16 \\ \hline
+2 & 4: (R,R,R,L), (R,R,L,R), (R,L,R,R), (L,R,R,R) & 4/16 \\ \hline
+4 & 1: (R,R,R,R) & 1/16 \\ \hline
+\end{tabular}
+\end{table}
+
+d. How would the PMF change if the particle was twice as likely to move to the right as it is to the left? Create a table showing the new PMF. Also clearly state any assumption you need to make in order to re-calculate the probabilities. 
+
+If the probability of moving right is twice than the probability of moving left, than probability of moving right is $P(r) = \frac{2}{3}$ and probability of moving left is $P(l) = \frac{1}{3}$ because $P(r) + P(l)$ must equal $1$. Is we consider these new probabilities than we will get a new PMF, where only the last column is different.
+
+Calculating the new probabilities 
+```{r calc probabilities}
+left_4 = 1 * (1/3)^4
+left_3_right_1 = 4 * (1/3)^3 * (2/3)^1 
+left_2_right_2 = 6 * (1/3)^2 * (2/3)^2 
+left_1_right_3 = 4 * (1/3)^1 * (2/3)^3 
+right_4 = 1 * (2/3)^4 
+left_4 + left_3_right_1+ left_2_right_2 + left_1_right_3 + right_4
+```
+
+\begin{table}[h]
+\centering
+\begin{tabular}{|c|p{4in}|r|} \hline
+$x$ &  outcomes from $S$ & $f(x)$ \\ \hline 
+-4 & 1: (L,L,L,L) & `r left_4` \\ \hline
+-2 & 4: (L,L,L,R), (L,L,R,L), (L,R,L,L), (R,L,L,L) & `r left_3_right_1` \\ \hline
+0 & 6: (L,L,R,R), (L,R,R,L), (L,R,L,R), (R,R,L,L), (R,L,R,L), (R,L,L,R) & `r left_2_right_2` \\ \hline
+2 & 4: (R,R,R,L), (R,R,L,R), (R,L,R,R), (L,R,R,R) & `r left_1_right_3` \\ \hline
+4 & 1: (R,R,R,R) & `r right_4` \\ \hline
+\end{tabular}
+\end{table}
+
+\dotfill
+
+3. (CDF) Suppose the random variable $X$ has the CDF:
+\begin{align*}
+F(x) &= P(X \leq x), \\
+     &= \left\{ \begin{array}{cc}
+                      0 & x < 0, \\ \\
+            \frac{1}{3} & 0 \leq x < \frac{2}{5}, \\ \\
+            \frac{3}{4} & \frac{2}{5} \leq x  < \frac{4}{5}, \\ \\
+                      1 & \frac{4}{5} \leq x. \end{array} \right.
+\end{align*}
+
+   Find $P(\frac{1}{4} < X < \frac{3}{4})$. Show your work.
+   
+\begin{align*}
+P(\frac{1}{4}<X<\frac{3}{4}) &= P(X<\frac{3}{4}) - P(\frac{1}{4}<X) \text{ By inequality definintion} \\
+&= P(X<\frac{15}{20}) - P(\frac{5}{20}<X) \text{ changing denominator of fractions to 20 to more easiliy compare to the CDF} \\ 
+&= \frac{3}{4} - \frac{1}{3} \text{ using the given CDF we can find the two probabilities}\\
+&= \frac{5}{12}
+\end{align*}
+
+\dotfill
+
+4. (Transformation) Suppose $X$ is a discrete uniform random variable on the integers $-n, -n + 1, -n +2, \dots, 0, 1, 2,\dots, n$, that is, 
+$$f(x) = P(X = x) = \frac{1}{2n + 1}, \ \ \ x = -n, -n+1, -n+2, \dots,-1, 0,1,2,\dots,n - 1, n.$$
+
+   Write the PMF of $Y = |X|$. Be sure to offer some explanation for your work.
+   
+\begin{tabular}{|c|c|c|c|c|c|c|} \hline
+$y$ & 0 & 1 & 2 & $\dots$ & n-1 & n \\ \hline
+$f(y)$ & $\frac{1}{2n+1}$ & $\frac{2}{2n+1}$ & $\frac{2}{2n+1}$ & $\dots$ & $\frac{2}{2n+1}$  & $\frac{2}{2n+1}$ \\ \hline
+\end{tabular}
+
+This is the PMF of $Y = |X|$. We get this because when $Y = |X|$, we know that Y can take on any value of $x$ where $x \ge 0$, meaning that the PMF will start at $0$ and go until the largest value of $x$, which is $n$. Then $f(y) = P(Y = y) = P(Y = |x|)$. This means that $f(y) = \frac{1}{2n + 1}$, but for $y>0$, $f(y) = 2 * \frac{1}{2n + 1}$ because you have to account for the negative values as well. 
+   
+   
+   
+   
+   
+   
+   
+   
+   

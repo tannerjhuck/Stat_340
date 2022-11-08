@@ -1,0 +1,164 @@
+---
+title: "Homework 2"
+subtitle: "Autumn 2022"
+author: "Tanner Huck"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+```
+
+* * * 
+
+### Instructions
+
+- This homework is due in Gradescope on Wednesday Oct 19 by midnight PST.
+
+- Please answer the following questions in the order in which they are posed. 
+
+- Don't forget to knit the document frequently to make sure there are no compilation errors. 
+
+- When you are done, download the PDF file as instructed in section and submit it in Gradescope. 
+
+
+* * *
+
+### Exercises 
+
+1. Suppose 12 coins are tossed and the outcome (head or tail) is recorded for each.  
+   
+a. The sample space $S$ corresponding to this "experiment" consists of all possible sequences of heads and tails that result from tossing 12 coins. How many elements are in $S$? Calculate this number in a code chunk and also explain your answer very briefly.
+
+```{r coin_flip_sample_space}
+total_elements = 2^12
+total_elements
+```
+
+Using the equally likely rule, we know that flipping a coin will result in 2 outcomes with equal probability. Flipping a coin 12 times in a row will simply result in $2_1*2_2*2_3*\dots*2_{12}$ or $2^{12}$ different outcomes with equal probability. Meaning that the sample space will have `r total_elements` elements.
+
+   
+b. Let $E$ denote the event that 7 of the 12 coins land on heads. How many elements are in $E$? Explain your answer very briefly.
+    
+```{r event_seven_heads}
+element_seven_heads = choose(12, 7)
+element_seven_heads
+```
+
+If E is the event that 7 of the 12 coins land of heads, than the number of elements in event E is 12 choose 7. Meaning there are `r element_seven_heads` elements in event E.
+
+c. Calculate $P(E)$ assuming all the elements in $S$ are equally likely. Report your final answer in a sentence using inline code.
+
+```{r proability_element_event_E}
+probability_E = element_seven_heads / total_elements
+probability_E
+```
+
+The probability of event E is `r probability_E`.
+   
+   
+2. To estimate the number $N$ of goldfish in a pond, $r=25$ fish were caught, tagged and released. Later, a second sample of $n=20$ fish were caught and 5 fish in this sample were noted to be tagged.  
+ 
+a.  How many possible samples of size $n=20$ can be formed from the $N$ fish in the pond?  (Leave your answer in terms of a binomial coefficient - you cannot calculate it because you don't know $N$)
+
+To see how many samples of size $n=20$ can be formed from $N$ fish, we simply do $N \choose 20$.
+    
+b. The event $E$ contains all the samples which have 5 tagged and 15 untagged fish. How many elements are in the event $E$? (Leave your answer in terms of $N$)
+
+Let event E be the event that the sample consists of 5 tagged and 15 untagged fish. Than to find the number of elements in E we can do ${25 \choose {5}}{{N-25} \choose 15}$.
+   
+c. Assuming each possible sample is equally likely, give an expression for $P(E)$. (Leave your answer in terms of $N$)
+
+Assuming that each sample is equally likely, than the probability of E would be  
+$P(E)= {25 \choose 5} {{N-25} \choose 15} / {N \choose 20}$
+
+
+
+d.  In this part, we will examine visually how $P(E)$ varies as a function of $N$.  Fill in the blanks in the R code provided and run it in R to create the plot. You should remove the `eval = FALSE` chunk option before knitting.   (Note: this part does not require you to know **tidyverse** or **ggplot** functions, and should be doable by all.)
+
+
+```{r fish_plot}
+
+fishes <- tibble( #enhanced data frame
+        N = 40:200,    #possible values for N: 40,41, ...,200
+        prob = choose(25,5)*choose((N-25),15)/choose(N,20))  #write expression for P(E) in terms of N
+
+ggplot(data = fishes, 
+       mapping = aes(x = N,    
+                     y = prob) ) +
+           geom_line() +
+             labs( title = "Probability of Fish Sample" ,
+                  x = "Number of fish in Pond", 
+                  y = "Probability 5 tagged and 15 untagged fish") +
+          theme(plot.title=element_text(hjust=0.5))
+              
+```
+
+
+3. Among all students seeking treatment at Hall Health, 0.5% are eventually diagnosed as having mononucleosis (event $A$). Of those who do have mono, 90% complain of a sore throat (event $B$). But 30% of those not having mono also have sore throats. 
+
+a. Make a tree diagram of the probabilities relating presenting with a sore throat and a diagnosis of mononucleosis. (Don't forget to include the **openintro** package in the setup chunk)
+
+```{r treediagram_health}
+library(openintro) 
+treeDiag(main = c("Mononucleosis Status", "Throat"),
+         p1 = c(0.005, 0.995),
+         p2 = list(c("0.90", "0.10"), c("0.30", "0.70")),
+         out1 = c("Present", "Absent"),
+         out2 = c("Sore", "Not Sore"),
+         showSol = FALSE,
+         showWork = TRUE,
+         solwd = 0.5,
+         digits = 6)
+```
+    
+b. If a student comes to Hall Health and says that she has a sore throat, what is the probability that she has mono? Be sure to show your steps carefully. 
+
+We want to find the conditional probability that someone has mono given that they have a sore throat denoted by $P(A|B)$. By dediniton of conditional probability we can rewrite this as $P(A \cap B)/P(B)$. Now solving for this probability.
+
+```{r probability of having mono given you have a sore throat}
+p_A_and_B = 0.005 * 0.90 #Probability of mono and sore throat
+p_Ac_and_B = 0.995 * 0.30 #Probability of no mono and sore throat
+p_B = p_A_and_B + p_Ac_and_B #Probability of sore throat
+p_A_given_B = p_A_and_B / p_B #Probability of mono given that you have sore throat
+p_A_given_B
+```
+
+Hence the probability that you have mono given you have a sore throat is `r p_A_given_B`.
+
+4. Prove that if $A$ and $B$ are independent events, then the following pairs are also independent. 
+
+a. $A$ and $B^c$
+
+By definition, we can write $A$ as the union of two disjoint sets: $$A = (A \cap B) \cup (A \cap B^c)$$ By using the third axiom of probability and because we know $(A \cap B)$ and $(A \cap B^c)$ are disjoint, we can rewrite as $$P(A) = P(A \cap B) + P(A \cap B^c)$$ Because $A$ and $B$ independent, by the definition of independence we can rewrite $P(A \cap B)$ as $P(A) * P(B)$, which gives us $$P(A) = P(A) * P(B) + P(A \cap B^c)$$ If we isolate $P(A \cap B^c)$ and rearrange we get $$P(A \cap B^c) = P(A) - P(A) * P(B)$$. Then factoring a $P(A)$ gives us $$P(A \cap B^c) = P(A) * (1-P(B))$$ finally by the rule of complements we can rewrite as $$P(A \cap B^c) = P(A) * P(B)$$ Hence we know that $P(A \cap B^c)$ is equal to $P(A) * P(B^c)$. By our definition of independence that means that $A$ and $B^c$ are independent.
+
+b. $A^c$ and $B$
+
+This case is very similar to problem a, so I will just show the steps. (Just switch A and B).
+$$B = (B \cap A) \cup (B \cap A^c)$$
+$$P(B) = P(B \cap A) + P(B \cap A^c)$$
+$$P(B) = P(B) * P(A) + P(B \cap A^c)$$
+$$P(B \cap A^c) = P(B) - P(B) * P(A)$$
+$$P(B \cap A^c) = P(B) * (1-P(A))$$
+$$P(B \cap A^c) = P(B) * P(A^c)$$
+Hence by our definition of independence we know that $B$ and $A^c$ are independent as well.
+
+c. $A^c$ and $B^c$.
+
+Using DeMorgan's laws we know that 
+$$P(A^c \cap B^c) = P((A \cup B)^c)$$
+Then using the complement rule we know 
+$$P(A^c \cap B^c) = 1 - P(A \cup B)$$
+Using the addition rule
+$$P(A^c \cap B^c) = 1 - [P(A) + P(B) - P(A \cap B)]$$
+Because we know that $A$ and $B$ are independent we can rewrite as
+$$P(A^c \cap B^c) = 1 - [P(A) + P(B) - P(A) * P(B)]$$
+Then using the complement rule again, we can substitute all $P(A)$ with $1-P(A^c)$ and likewise for $B$
+$$P(A^c \cap B^c) = 1 - [1-P(A^c) + 1-P(B^c) - [(1-P(A^c)) * (1-P(B^c))]$$
+Now if we expand the multiplication and then simplify we get
+$$P(A^c \cap B^c) = 1 - (1 - P(A^c) * P(B^c))$$
+Which is the same as 
+$$P(A^c \cap B^c) = P(A^c) * P(B^c)$$
+Thus, by our definition of independence, this means that $A^c$ and $B^c$ must be independent.
+

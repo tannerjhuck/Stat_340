@@ -1,0 +1,200 @@
+---
+title: "Homework 4"
+subtitle: "Autumn 2022"
+author: "Tanner Huck"
+header-includes:
+    - \usepackage{setspace}\doublespacing
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(fastR2)
+```
+
+* * * 
+
+### Instructions
+
+- This homework is due in Gradescope on Wednesday Nov 2 by midnight PST.
+
+- Please answer the following questions in the order in which they are posed. 
+
+- Don't forget to knit the document frequently to make sure there are no compilation errors. 
+
+- When you are done, download the PDF file as instructed in section and submit it in Gradescope. 
+
+
+* * *
+
+
+1. (Therapy) In the past, a person afflicted with a certain neurological disease had a 30% chance of complete recovery. A radically different therapy has been tested on 10 patients, 7 of whom recovered. Let the random variable $X$ denote the number (in a sample of 10) who recover using the new therapy. 
+
+a. What is the distribution of $X$ assuming the new therapy is no better than the old one? State the name of the distribution and also the values of its parameters. Be sure to state any assumptions you are making when deciding on the distribution. 
+
+$$X \sim Binom(10,0.3)$$
+
+X is a binomial distribution with $10$ trials and $0.30%$ chance of a success. For a binomial distribution we have to assume that there is a fixed number of trials, each trial has two outcomes, each trial has the same probability of success, and that each trial is independent.
+
+b. Make a probability histogram of the distribution in part a. Add a vertical line at $x=7$ to the histogram using the `geom_vline` layer.  Be sure to echo your code chunk. (*Hint* Type `? geom_vline` for help.)
+
+```{r Prob Histogram x}
+gf_dist( dist = "binom",
+         kind = "histogram",
+         binwidth = 1,
+         fill = "dark green",
+         color = "black",
+         params = list(size = 10, prob = 0.3) ) +
+  geom_vline(xintercept = 7) +
+  labs(x="X", y="Probability",
+       title="Probability of Recovery",
+       subtitle="Brinom(size = 10, prob = 0.3)") +
+   theme(plot.title=element_text(hjust=0.5)) +
+   theme(plot.subtitle=element_text(hjust=0.5)) +
+  scale_x_continuous(breaks = c(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10))
+```
+
+c. How *extreme* is a value of 7 under the presumed distribution in part a? The one-sided p-value which we will learn more about in STAT 342 is $P(X \geq 7)$. Calculate the one-sided p-value and report your answer in a complete sentence using inline code.  
+
+```{r prob of seven}
+prob_7 = pbinom(6,10,0.3,lower.tail = FALSE)
+```
+
+The one-sided p-value $P(X \geq 7)$ is `r prob_7`.
+
+2. (Pooling blood) Suppose that fifty people are to be given a blood test to see who has a certain disease. The obvious laboratory procedure is to examine each person’s blood individually,
+meaning that fifty tests would eventually be run. An alternative strategy is to divide
+each person’s blood sample into two parts—say, A and B. All of the A’s would then
+be mixed together and treated as one sample. If that “pooled” sample proved to be negative for the disease, all fifty individuals must necessarily be free of the infection,
+and no further testing would need to be done. If the pooled sample gave a positive
+reading, of course, all fifty B samples would have to be analyzed separately.
+
+   Let the random variable $X$ denote the number of tests which will need to be performed. Also let $\pi$ denote the probability that a randomly selected person is infected with the disease.
+
+a. Write the PMF of $X$ in a tabular format. You may assume independence of outcomes among people. (\emph{Hint: $X$ only has 2 values: 1, 51}).
+
+\begin{tabular}{|c|c|c|} \hline
+$x$ & 1 & 51 \\ \hline
+$f(x)$ & $(1-\pi)^{50}$ & $1-(1-\pi)^{50}$ \\ \hline
+\end{tabular}
+
+b. Give an expression for $E\left[X \right]$. Show your steps beginning with the definition of an expected value.
+
+An expected value is the mean of a random variable. The expected value of $X$ denoted $E\left[X \right]$ is what you would expect the outcome of x to be.
+
+$E\left[X \right] = \sum_{x}x*P(X=x) =\sum_{x} x * f(x) = (1 * (1-\pi)^{50}) + (51*(1-(1-\pi)^{50})$
+
+c. Make a line plot of $E\left[X \right]$ versus $p$. Be sure to echo the code chunk. Does the graph make sense intuitively? Explain briefly. (You can use the `geom_function` layer as we did to graph the variance of a Bernoulli random variable )
+
+```{r line plot of expected value}
+ggplot() + 
+  geom_function(fun = function(x){(1 * (1-x)^{50}) + (51*(1-(1-x)^{50}))}, xlim = c(0,1) ) +
+  labs(x = expression(pi),
+       y = "E[X]",
+       title = "E[X] versus Probability")
+```
+
+This graph does make sense intuitively. When the probability of someone being infected is close to 0, the expected value is close to 1, because we can expect to only have to make one test. When the probability of someone  being infected is close to 1, then we can expect to see more tests being run, thus the expected value is closer to 51.
+
+3. (Proof) Suppose $X \sim Binom(n, \pi)$. 
+   
+a.  Prove the following identity for any $x = 2, 3, \dots, n$
+   $$x \cdot (x-1) \cdot \binom{n}{x} = n \cdot (n-1) \binom{n-2}{x-2}.$$  
+   
+We want to prove the following equality.   
+
+\begin{align*}
+x*(x-1)*{n \choose x} &= n*(n-1)*{n-2 \choose x-2} \text{ by expanding we get} \\
+x(x-1)(\frac{n!}{x!(n-x)!}) &= n(n-1)(\frac{(n-2)!}{(x-2)!(n-2-(x-2))!}) 
+\text{ then simplifying we get} \\ 
+\frac{n!}{(x-2)!(n-x)!} &= \frac{n!}{(x-2)!(n-x)!} \\
+\end{align*}
+
+Hence the equality $x \cdot (x-1) \cdot \binom{n}{x} = n \cdot (n-1) \binom{n-2}{x-2}.$ must be true for any any $x = 2, 3, \dots, n$.
+
+b. Find $E\left[ X (X-1) \right]$. (\emph{Hint: follow the derivation for $E\left[X \right]$ in Theorem 7.1 for the binomial random variable})
+
+Starting by the definition of an expected value.
+\begin{align*}
+E[X(X-1)] &=  \sum_{x}^{} x(x-1)f(x) \text{ since } X \sim Binom(n, \pi) \\
+&= \sum_{x=0}^{n} x(x-1){n \choose x}\pi^2(1-\pi)^{n-x} \text{ then using part 3a, we can substitue} \\
+&= \sum_{x=0}^{n} n(n-1){n-2 \choose x-2}\pi^x(1-\pi)^{n-x} \text{ then pulling out some constants} \\
+&= n(n-1)\pi^2 \sum_{x=0}^{n} {n-2 \choose x-2}\pi^{x-2}(1-\pi)^{n-x} \text{ letting y=x-2} \\
+&= n(n-1)\pi^2 \sum_{y=0}^{n-2} {n-2 \choose y}\pi^y(1-\pi)^{n-2-y} \text{ then by fact 2} \\
+&= n(n-1)\pi^2 \text{ simpliying} \\
+&= (n^2-n)\pi^2 
+\end{align*}
+Hence $E\left[ X (X-1) \right] = (n^2-n)\pi^2$
+
+c. Use your result from part b. to show that 
+   $Var(X) = n \pi (1-\pi).$ (\emph{Hint:} 
+   $$\sum x (x-1) f(x) = \sum x^2 f(x) - \sum x f(x).$$
+Starting off with the definition of Variance and the formula we gave in class,
+\begin{align*}
+Var[X] &= E[(X-\mu)^2] = E[X^2]-\mu^2 = E[X^2]-(E[X])^2 
+\text{ then expanding we get} \\
+&= \sum_{x}^{} x^2f(x) - (n\pi)^2 
+\text{ then subtracting and adding the same thing} \\
+&= \sum_{x}^{} x^2f(x) - \sum_{x}^{} xf(x) + \sum_{x}^{} xf(x) - n^2\pi^2 
+\text{ by definiton of summations} \\
+&= \sum_{x}^{} x(x-1)f(x) + \sum_{x}^{} xf(x) - n^2\pi^2 
+\text{ substitution in anwser from part b and solving} \\
+&= (n^2-n)\pi^2 + n\pi - n^2\pi^2 
+\text{ then simplifying} \\
+&= n^2\pi^2-n\pi^2+n\pi-n^2\pi^2 \\
+&= n\pi-n\pi^2 \\
+&= n\pi(1-\pi)
+\end{align*}
+
+Hence $Var(X) = n \pi (1-\pi)$.
+
+4. (Chebyshev) Suppose $X \sim Binom(n, \frac{1}{2})$. 
+
+   a. What is the mean $\mu$ and standard deviation $\sigma$ of $X$?
+
+Since x is a binomial,
+$\mu = E\left[X \right] = n * \frac{1}{2}$
+
+Using our answer to part 3c,
+$\sigma^2 = Var[X] = n\pi(1-\pi) = n\frac{1}{2}(1-\frac{1}{2}) = \frac{1}{4}n$
+
+Then standard deviation is,
+$\sigma = +\sqrt{\frac{1}{4}n} = +\frac{1}{2}\sqrt{n}$
+   
+   b. Use Chebyshev's inequality to find the smallest $n$ in order for 
+$$P \left(0.9 \times \frac{n}{2} < X < 1.1 \times \frac{n}{2} \right)$$ to be at least 90%.
+
+   (Hint: Show that the event $$0.9 \times \frac{n}{2} < X < 1.1 \times \frac{n}{2} $$ can be rewritten as $$|X - \mu | < 0.1 \times \sqrt{n} \times \sigma.$$ Then apply Chebyshev's inequality.)
+
+Let us first look at 
+$$0.9 \times \frac{n}{2} < X < 1.1 \times \frac{n}{2}$$
+We know that $\frac{n}{2}$ is equal to $\mu$, so
+$$0.9 \times \mu < X < 1.1 \times \mu$$
+Then doing some algebra with the inequalities,
+$$-0.1\mu < X - \mu < 0.1\mu$$
+This is the same as 
+$$|X-\mu| < 0.1\mu$$
+Since $\sigma = +\frac{1}{2}\sqrt{n}$ then we can substitute $\mu$ for,
+$$|X-\mu| < 0.1\sqrt{n}\sigma$$
+Chebyshev's inequality tells us $P(|X-\mu|<k\sigma) \geq 1 - \frac{1}{k^2}$. This means that $0.1\sqrt{n}\sigma = k\sigma$. Then solving this equation for $k$, we get $k = 0.1\sqrt{n}$. This means that for $P \left(0.9 \times \frac{n}{2} < X < 1.1 \times \frac{n}{2} \right)$ to be at least 90%, than $1 - \frac{1}{k^2} = 0.9$, where $k = 0.1\sqrt{n}$. Then if we solve this equation for $n$,
+$$0.9 = 1 - \frac{1}{(0.1\sqrt{n})^2}$$
+$$0.9 = 1 - \frac{1}{0.01n}$$
+$$n = \frac{-1}{-0.1*0.01}$$
+$$n = 1000$$
+Hence, for $P \left(0.9 \times \frac{n}{2} < X < 1.1 \times \frac{n}{2} \right)$ to be at least 90%, n must be at least 1000.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
