@@ -76,7 +76,7 @@ Var[\frac{X-b}{a-b}] &= (\frac{1}{a-b})^2Var[x] \\
 
 a. How many Rh positive infants should they expect to type before they find their first Rh negative? Be sure to set up the problem (random variable, distribution, assumptions you need to make) and clearly \textbf{state} any results you are using before just using them.
 
-$X$ is the number of positive Rh infants until the first negative Rh infant. Then $X \sim NBinom(1,0.15) = Geom(0.15)$. We are assuming that there is a fixed number of trials, 1. There are two outcomes, positive and negative. The probability of a negative is the same in each trial. Finally, that each trial is independent. 
+$X$ is the number of positive Rh infants until the first negative Rh infant. Then $X \sim NBinom(1,0.15) = Geom(0.15)$. We are assuming that there is a fixed number of trials, 1. There are two outcomes, positive and negative. The probability of a negative is the same in each trial. Finally, that each trial is independent, meaning the probability of a positive and negative infant is the same in each trial.  
 
 Now finding how many Rh positive infants should we expect to type before the first Rh negative.
 
